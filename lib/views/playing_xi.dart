@@ -1,56 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../bcodez/color.dart';
 import '../bcodez/widget.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 class PlayingXI extends StatefulWidget {
-  const PlayingXI({super.key});
+  final List<dynamic> playingxi;
+  PlayingXI({required this.playingxi});
 
   @override
   State<PlayingXI> createState() => _PlayingXIState();
 }
 
 class _PlayingXIState extends State<PlayingXI> {
-  List<dynamic> playxi1 = [];
-  Future<void> fetchData() async {
-    final response = await http
-        .get(Uri.parse("https://tzbd.000webhostapp.com/playxi1.json"));
-
-    if (response.statusCode == 200) {
-      setState(() {
-        playxi1 = json.decode(response.body);
-      });
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
-
-  List<dynamic> playxi2 = [];
-  Future<void> fetchData2() async {
-    final response = await http
-        .get(Uri.parse("https://tzbd.000webhostapp.com/playxi2.json"));
-
-    if (response.statusCode == 200) {
-      setState(() {
-        playxi2 = json.decode(response.body);
-      });
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    fetchData();
-    fetchData2();
   }
 
   @override
   Widget build(BuildContext context) {
+    final List<dynamic> facea = (widget.playingxi[0]['face'] as List<dynamic>);
+    final List<dynamic> kita = (widget.playingxi[0]['kit'] as List<dynamic>);
+    final List<dynamic> playera =
+        (widget.playingxi[0]['player'] as List<dynamic>);
+
+    final List<dynamic> txt2a = (widget.playingxi[0]['txt2'] as List<dynamic>);
+    final List<dynamic> faceb = (widget.playingxi[1]['face'] as List<dynamic>);
+    final List<dynamic> kitb = (widget.playingxi[1]['kit'] as List<dynamic>);
+    final List<dynamic> playerb =
+        (widget.playingxi[1]['player'] as List<dynamic>);
+    final List<dynamic> txt2b = (widget.playingxi[1]['txt2'] as List<dynamic>);
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -88,20 +68,10 @@ class _PlayingXIState extends State<PlayingXI> {
                         crossAxisSpacing: 10.0, // Spacing between columns
                         mainAxisSpacing: 35.0, // Spacing between rows
                       ),
-                      itemCount: playxi1.length, // Number of items in the grid
+                      itemCount: facea.length, // Number of items in the grid
                       itemBuilder: (BuildContext context, int index) {
-                        // final facex = teams[0]['face'] as List<String>;
-                        // final kitx = teams[0]['kit'] as List<String>;
-                        // final playerx = teams[0]['player'] as List<String>;
-                        // final txt2x = teams[0]['txt2'] as List<String>;
-
-                        // Create your grid item here, for example:
-
-                        return tColumn(
-                            playxi1[index]["face"],
-                            playxi1[index]["kit"],
-                            playxi1[index]["player"],
-                            playxi1[index]["txt2"]);
+                        return tColumn(facea[index], kita[0], playera[index],
+                            txt2a[index]);
                       },
                     ),
                     GridView.builder(
@@ -112,18 +82,10 @@ class _PlayingXIState extends State<PlayingXI> {
                         crossAxisSpacing: 10.0, // Spacing between columns
                         mainAxisSpacing: 35.0, // Spacing between rows
                       ),
-                      itemCount: playxi2.length, // Number of items in the grid
+                      itemCount: faceb.length, // Number of items in the grid
                       itemBuilder: (BuildContext context, int index) {
-                        // final facey = teams[1]['face'] as List<String>;
-                        // final kity = teams[1]['kit'] as List<String>;
-                        // final playery = teams[1]['player'] as List<String>;
-                        // final txt2y = teams[1]['txt2'] as List<String>;
-                        // Create your grid item here, for example:
-                        return tColumn(
-                            playxi2[index]["face"],
-                            playxi2[index]["kit"],
-                            playxi2[index]["player"],
-                            playxi2[index]["txt2"]);
+                        return tColumn(faceb[index], kitb[0], playerb[index],
+                            txt2b[index]);
                       },
                     ),
                   ],

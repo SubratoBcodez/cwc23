@@ -6,7 +6,6 @@ import 'package:cwc23/views/highlights.dart';
 import 'package:cwc23/views/home.dart';
 import 'package:cwc23/views/livetv.dart';
 import 'package:cwc23/views/match_preview.dart';
-import 'package:cwc23/views/matches.dart';
 import 'package:cwc23/views/playing_xi.dart';
 import 'package:cwc23/views/standings.dart';
 import 'package:cwc23/views/stedium.dart';
@@ -47,7 +46,11 @@ List<GetPage> getPages = [
       page: () => MatchPreview(
             fixtures: Get.arguments,
           )),
-  GetPage(name: playing_xi, page: () => PlayingXI()),
+  GetPage(
+      name: playing_xi,
+      page: () => PlayingXI(
+            playingxi: Get.arguments,
+          )),
   GetPage(name: stedium, page: () => Stedium()),
   GetPage(
       name: teamplayers,

@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cwc23/bcodez/widget.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../bcodez/color.dart';
 import 'dart:convert';
@@ -32,6 +34,25 @@ class _HighLightsState extends State<HighLights> {
   void initState() {
     super.initState();
     fetchData();
+    // initInterstitialAd();
+  }
+
+  late InterstitialAd interstitialAd;
+  bool isIntAdLoaded = false;
+
+  var initAdUnitId = "ca-app-pub-9362427100821170/3900578995";
+  initInterstitialAd() {
+    InterstitialAd.load(
+        adUnitId: initAdUnitId,
+        request: AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
+          interstitialAd = ad;
+          setState(() {
+            isIntAdLoaded = true;
+          });
+        }, onAdFailedToLoad: (error) {
+          interstitialAd.dispose();
+        }));
   }
 
   @override
@@ -63,6 +84,9 @@ class _HighLightsState extends State<HighLights> {
                           children: [
                             GestureDetector(
                               onTap: () => setState(() {
+                                if (isIntAdLoaded) {
+                                  interstitialAd.show();
+                                }
                                 launchUrl(Uri.parse(highlights[index]['url']),
                                     mode: LaunchMode.inAppWebView);
                               }),
@@ -75,8 +99,8 @@ class _HighLightsState extends State<HighLights> {
                                     borderRadius: BorderRadius.circular(15)),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(15),
-                                  child: Image.network(
-                                    highlights[index]["img"],
+                                  child: CachedNetworkImage(
+                                    imageUrl: highlights[index]["img"],
                                     fit: BoxFit.cover,
                                   ),
                                 ),

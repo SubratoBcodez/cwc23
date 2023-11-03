@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cwc23/bcodez/widget.dart';
+import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../bcodez/color.dart';
 import 'dart:convert';
@@ -32,6 +35,25 @@ class _LiveTVState extends State<LiveTV> {
   void initState() {
     super.initState();
     fetchData();
+    // initInterstitialAd();
+  }
+
+  late InterstitialAd interstitialAd;
+  bool isIntAdLoaded = false;
+
+  var initAdUnitId = "ca-app-pub-9362427100821170/3900578995";
+  initInterstitialAd() {
+    InterstitialAd.load(
+        adUnitId: initAdUnitId,
+        request: AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
+          interstitialAd = ad;
+          setState(() {
+            isIntAdLoaded = true;
+          });
+        }, onAdFailedToLoad: (error) {
+          interstitialAd.dispose();
+        }));
   }
 
   @override
@@ -55,13 +77,30 @@ class _LiveTVState extends State<LiveTV> {
       backgroundColor: AppColor.whiteclr2,
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.03,
+              width: double.maxFinite,
+              child: Container(
+                height: double.maxFinite,
+                width: double.maxFinite,
+                decoration: BoxDecoration(
+                    color: Colors.red, borderRadius: BorderRadius.circular(3)),
+                child: Text(
+                  "Live Tv Link is Provided by Some Third Party FTP Server",
+                  style: TextStyle(color: AppColor.whiteclr),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.80,
+            height: MediaQuery.of(context).size.height * 0.77,
             width: double.maxFinite,
             child: ListView.builder(
                 scrollDirection: Axis.vertical,
-                padding:
-                    EdgeInsets.symmetric(horizontal: 10.sp, vertical: 10.sp),
+                padding: EdgeInsets.symmetric(horizontal: 10.sp),
                 itemCount: livetv.length,
                 itemBuilder: (_, index) {
                   return Padding(
@@ -74,6 +113,9 @@ class _LiveTVState extends State<LiveTV> {
                           children: [
                             GestureDetector(
                               onTap: () => setState(() {
+                                if (isIntAdLoaded) {
+                                  interstitialAd.show();
+                                }
                                 launchUrl(Uri.parse(livetv[index]['url']),
                                     mode: LaunchMode.inAppWebView);
                               }),
@@ -86,8 +128,8 @@ class _LiveTVState extends State<LiveTV> {
                                     borderRadius: BorderRadius.circular(15)),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(15),
-                                  child: Image.network(
-                                    livetv[index]["img"],
+                                  child: CachedNetworkImage(
+                                    imageUrl: livetv[index]["img"],
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -96,6 +138,9 @@ class _LiveTVState extends State<LiveTV> {
                             Positioned(
                                 child: IconButton(
                               onPressed: () => setState(() {
+                                if (isIntAdLoaded) {
+                                  interstitialAd.show();
+                                }
                                 launchUrl(Uri.parse(livetv[index]['url']),
                                     mode: LaunchMode.inAppWebView);
                               }),

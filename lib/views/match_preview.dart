@@ -1,10 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cwc23/bcodez/color.dart';
-import 'package:cwc23/bcodez/route.dart';
+
 import 'package:cwc23/bcodez/widget.dart';
 import 'package:cwc23/views/playing_xi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -18,20 +19,6 @@ class MatchPreview extends StatefulWidget {
 }
 
 class _MatchPreviewState extends State<MatchPreview> {
-  String vanue1 = "";
-  String vs1 = "";
-  String t1 = "";
-  String t2 = "";
-  String date1 = "";
-  String match1 = "";
-  String time1 = "";
-  String event1 = "";
-  String d1 = "";
-  String h1 = "";
-  String m1 = "";
-
-// Variable to store the JSON data
-
   late Timer _timer;
   DateTime _targetTime =
       DateTime(2023, 10, 0, 0, 0, 0); // Initialize with default values
@@ -47,33 +34,7 @@ class _MatchPreviewState extends State<MatchPreview> {
 
       // Assuming the JSON data is an array, you may want to access an element (e.g., the first element) within the list.
       if (dataList.isNotEmpty) {
-        final Map<String, dynamic> data =
-            dataList[0]; // Access the first element
-        final String vanue = data["vanue"];
-        final String vs = data["vs"];
-        final String date = data["date"];
-        final String tx = data["tx"];
-        final String ty = data["ty"];
-        final String time = data["time"];
-        final String match = data["match"];
-        final String event = data["event"];
-        final String d = data["d"];
-        final String h = data["h"];
-        final String m = data["m"];
-
         setState(() {
-          vanue1 = vanue;
-          vs1 = vs;
-          t1 = tx;
-          t2 = ty;
-          date1 = date;
-          match1 = match;
-          time1 = time;
-          event1 = event;
-          d1 = d;
-          h1 = h;
-          m1 = m;
-
           // Update the target time based on JSON data
           _targetTime = DateTime(
               2023,
@@ -175,14 +136,15 @@ class _MatchPreviewState extends State<MatchPreview> {
                           FontWeight.bold,
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
-                                child: Image.network(
-                                  widget.fixtures["flag1"],
+                                child: CachedNetworkImage(
+                                  imageUrl: widget.fixtures["flag1"],
                                   height: 70.h,
                                   width: 70.w,
                                   fit: BoxFit.cover,
@@ -202,13 +164,12 @@ class _MatchPreviewState extends State<MatchPreview> {
                                     22,
                                     FontWeight.bold,
                                   ),
-
                                 ],
                               ),
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
-                                child: Image.network(
-                                  widget.fixtures["flag2"],
+                                child: CachedNetworkImage(
+                                  imageUrl: widget.fixtures["flag2"],
                                   height: 70.h,
                                   width: 70.w,
                                   fit: BoxFit.cover,
@@ -402,34 +363,157 @@ class _MatchPreviewState extends State<MatchPreview> {
                   FontWeight.bold,
                   al: TextAlign.center,
                 )),
-                // Tab(
-                //     child: cText(
-                //   "SCORECARD",
-                //   AppColor.purpleclr,
-                //   12,
-                //   FontWeight.bold,
-                //   al: TextAlign.center,
-                // )),
               ]),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.847,
                 width: double.maxFinite,
                 child: TabBarView(children: [
-                  cText(
-                    "MATCH INFO",
-                    AppColor.purpleclr,
-                    12,
-                    FontWeight.bold,
-                    al: TextAlign.center,
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.847,
+                    width: double.maxFinite,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 20,
+                        ),
+                        cText(
+                            '${widget.fixtures["tx"]} V ${widget.fixtures["ty"]}',
+                            AppColor.purpleclr,
+                            20,
+                            FontWeight.bold,
+                            al: TextAlign.left),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                  text: TextSpan(children: [
+                                cTextSpan("Match state : ", AppColor.purpleclr,
+                                    17, FontWeight.bold),
+                                cTextSpan(widget.fixtures["state"],
+                                    AppColor.pinkclr, 17, FontWeight.normal)
+                              ])),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              RichText(
+                                  text: TextSpan(children: [
+                                cTextSpan("Match No : ", AppColor.purpleclr, 17,
+                                    FontWeight.bold),
+                                cTextSpan(widget.fixtures["match"],
+                                    AppColor.pinkclr, 17, FontWeight.normal)
+                              ])),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              RichText(
+                                  text: TextSpan(children: [
+                                cTextSpan("Stadium : ", AppColor.purpleclr, 17,
+                                    FontWeight.bold),
+                                cTextSpan(widget.fixtures["stadium"],
+                                    AppColor.pinkclr, 17, FontWeight.normal)
+                              ])),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Divider(
+                                thickness: 2,
+                                indent: 30,
+                                endIndent: 30,
+                                color: AppColor.whiteclr2,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Column(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: CachedNetworkImage(
+                                      imageUrl: widget.fixtures["flag1"],
+                                      height: 70.h,
+                                      width: 70.w,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  cText(
+                                    widget.fixtures["rank2"],
+                                    AppColor.pinkclr,
+                                    20,
+                                    FontWeight.bold,
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  cText(
+                                    "TEAM\n COMPARISON",
+                                    AppColor.purpleclr,
+                                    20,
+                                    FontWeight.normal,
+                                    al: TextAlign.center,
+                                  ),
+                                  SizedBox(
+                                    height: 25,
+                                  ),
+                                  cText(
+                                    "ODI RANK",
+                                    AppColor.purpleclr,
+                                    18,
+                                    FontWeight.bold,
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: CachedNetworkImage(
+                                      imageUrl: widget.fixtures["flag2"],
+                                      height: 70.h,
+                                      width: 70.w,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  cText(
+                                    widget.fixtures["rank1"],
+                                    AppColor.pinkclr,
+                                    20,
+                                    FontWeight.bold,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  PlayingXI(),
-                  // cText(
-                  //   "SCORECARD",
-                  //   AppColor.purpleclr,
-                  //   12,
-                  //   FontWeight.bold,
-                  //   al: TextAlign.center,
-                  // ),
+                  PlayingXI(
+                    playingxi: widget.fixtures["playxi"],
+                  ),
                 ]),
               )
             ],

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -31,15 +32,15 @@ Widget tColumn(face, kit, txt, txt2) {
                 right: 0,
                 left: 0,
                 top: -60.sp,
-                child: Image.network(
-                  face,
+                child: CachedNetworkImage(
+                  imageUrl: face,
                   // height: 80.h,
                   width: 85.w,
                 ),
               ),
               Positioned(
-                  child: Image.network(
-                kit,
+                  child: CachedNetworkImage(
+                imageUrl: kit,
                 width: 85.w,
                 // height: 30.h,
               ))
@@ -118,8 +119,8 @@ Widget cColumn(txt0, txt1, txt2, face, kit) {
                 Positioned(
                   right: 3,
                   bottom: -25,
-                  child: Image.network(
-                    face,
+                  child: CachedNetworkImage(
+                    imageUrl: face,
                     // height: 80.h,
                     width: 85.w,
                   ),
@@ -127,8 +128,8 @@ Widget cColumn(txt0, txt1, txt2, face, kit) {
                 Positioned(
                   bottom: -40,
                   right: 0,
-                  child: Image.network(
-                    kit,
+                  child: CachedNetworkImage(
+                    imageUrl: kit,
                     width: 90.w,
                     // height: 30.h,
                   ),

@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cwc23/bcodez/color.dart';
 import 'package:cwc23/bcodez/route.dart';
 import 'package:cwc23/bcodez/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -34,6 +36,25 @@ class _TeamsState extends State<Teams> {
   void initState() {
     super.initState();
     fetchData();
+    initInterstitialAd();
+  }
+
+  late InterstitialAd interstitialAd;
+  bool isIntAdLoaded = false;
+
+  var initAdUnitId = "ca-app-pub-9362427100821170/3900578995";
+  initInterstitialAd() {
+    InterstitialAd.load(
+        adUnitId: initAdUnitId,
+        request: AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
+          interstitialAd = ad;
+          setState(() {
+            isIntAdLoaded = true;
+          });
+        }, onAdFailedToLoad: (error) {
+          interstitialAd.dispose();
+        }));
   }
 
   @override
@@ -59,8 +80,8 @@ class _TeamsState extends State<Teams> {
                         color: AppColor.whiteclr,
                         child: ListTile(
                           leading: CircleAvatar(
-                            child: Image.network(
-                              teams[index]['flag'],
+                            child: CachedNetworkImage(
+                              imageUrl: teams[index]['flag'],
                               width: 80.w,
                               height: 80.h,
                               fit: BoxFit.cover,
@@ -70,13 +91,13 @@ class _TeamsState extends State<Teams> {
                           title: cText(
                             teams[index]['title'],
                             AppColor.purpleclr,
-                            22,
+                            20,
                             FontWeight.bold,
                           ),
                           subtitle: cText(
                             teams[index]['sub'],
                             AppColor.purpleclr,
-                            15,
+                            14,
                             FontWeight.normal,
                           ),
                           trailing: Column(
@@ -90,8 +111,8 @@ class _TeamsState extends State<Teams> {
                                   Positioned(
                                     right: 3,
                                     bottom: -30,
-                                    child: Image.network(
-                                      teams[index]['face'][0],
+                                    child: CachedNetworkImage(
+                                      imageUrl: teams[index]['face'][0],
                                       // height: 80.h,
                                       width: 65.w,
                                     ),
@@ -99,8 +120,8 @@ class _TeamsState extends State<Teams> {
                                   Positioned(
                                     bottom: -40,
                                     right: 0,
-                                    child: Image.network(
-                                      teams[index]['kit'][0],
+                                    child: CachedNetworkImage(
+                                      imageUrl: teams[index]['kit'][0],
                                       width: 70.w,
                                       // height: 30.h,
                                     ),
@@ -109,8 +130,12 @@ class _TeamsState extends State<Teams> {
                               ),
                             ],
                           ),
-                          onTap: () =>
-                              Get.toNamed(teamplayers, arguments: teams[index]),
+                          onTap: () {
+                            if (isIntAdLoaded) {
+                              interstitialAd.show();
+                            }
+                            Get.toNamed(teamplayers, arguments: teams[index]);
+                          },
                         ),
                       ),
                     );

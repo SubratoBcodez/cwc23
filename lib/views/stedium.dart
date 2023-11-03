@@ -1,8 +1,9 @@
-import 'package:cwc23/bcodez/route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cwc23/bcodez/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../bcodez/color.dart';
@@ -35,6 +36,25 @@ class _StediumState extends State<Stedium> {
   void initState() {
     super.initState();
     fetchData();
+    // initInterstitialAd();
+  }
+
+  late InterstitialAd interstitialAd;
+  bool isIntAdLoaded = false;
+
+  var initAdUnitId = "ca-app-pub-9362427100821170/3900578995";
+  initInterstitialAd() {
+    InterstitialAd.load(
+        adUnitId: initAdUnitId,
+        request: AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
+          interstitialAd = ad;
+          setState(() {
+            isIntAdLoaded = true;
+          });
+        }, onAdFailedToLoad: (error) {
+          interstitialAd.dispose();
+        }));
   }
 
   @override
@@ -60,17 +80,12 @@ class _StediumState extends State<Stedium> {
                       children: [
                         GestureDetector(
                           onTap: () => setState(() {
+                            if (isIntAdLoaded) {
+                              interstitialAd.show();
+                            }
                             launchUrl(Uri.parse(stedium[index]['url']),
                                 mode: LaunchMode.inAppWebView);
                           }),
-                          // onTap: () async {
-                          //   final url = Uri.parse(stedium[index]['url']);
-                          //   if (await canLaunchUrl(url)) {
-                          //     launchUrl(url);
-                          //   }
-                          //   // final url = await fetchData();
-                          //   // _launchURL(stedium[index]['url']);
-                          // },
                           child: Container(
                             height: MediaQuery.of(context).size.height * 0.25,
                             width: double.maxFinite,
@@ -79,8 +94,8 @@ class _StediumState extends State<Stedium> {
                                 borderRadius: BorderRadius.circular(15)),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(15),
-                              child: Image.network(
-                                stedium[index]["img"],
+                              child: CachedNetworkImage(
+                                imageUrl: stedium[index]["img"],
                                 fit: BoxFit.cover,
                               ),
                             ),

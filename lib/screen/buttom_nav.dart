@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:cwc23/bcodez/color.dart';
+import 'package:cwc23/screen/emni.dart';
 
 import 'package:cwc23/views/home.dart';
 import 'package:cwc23/views/livetv.dart';
@@ -12,7 +13,7 @@ class BottomNav extends StatefulWidget {
 }
 
 class _BottomNavState extends State<BottomNav> {
-  final _pages = [HomeScreen(), LiveTV(), MatchesScreen()];
+  final _pages = [HomeScreen(), CricketScoreWidget(), MatchesScreen()];
 
   int _indexPage = 0;
 

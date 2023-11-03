@@ -1,14 +1,11 @@
-import 'dart:ffi';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cwc23/bcodez/color.dart';
-import 'package:cwc23/bcodez/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,6 +25,31 @@ class _HomeScreenState extends State<HomeScreen> {
       throw Exception('Failed to load data');
     }
   }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // initInterstitialAd();
+  }
+
+  // late InterstitialAd interstitialAd;
+  // bool isIntAdLoaded = false;
+
+  // var initAdUnitId = "ca-app-pub-9362427100821170/3900578995";
+  // initInterstitialAd() {
+  //   InterstitialAd.load(
+  //       adUnitId: initAdUnitId,
+  //       request: AdRequest(),
+  //       adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
+  //         interstitialAd = ad;
+  //         setState(() {
+  //           isIntAdLoaded = true;
+  //         });
+  //       }, onAdFailedToLoad: (error) {
+  //         interstitialAd.dispose();
+  //       }));
+  // }
 
   List Menu = [
     {
@@ -90,7 +112,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return CircularProgressIndicator(); // Loading indicator while fetching data
+                          return Center(
+                              child:
+                                  CircularProgressIndicator()); // Loading indicator while fetching data
                         } else if (snapshot.hasError) {
                           return Text('Error: ${snapshot.error}');
                         } else if (!snapshot.hasData ||
@@ -103,8 +127,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemBuilder: (context, index) {
                               return ClipRRect(
                                 borderRadius: BorderRadius.circular(15),
-                                child: Image.network(
-                                  snapshot.data![index].imageUrl,
+                                child: CachedNetworkImage(
+                                  imageUrl: snapshot.data![index].imageUrl,
                                   fit: BoxFit.fill,
                                 ),
                               );
@@ -149,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.083,
+            height: MediaQuery.of(context).size.height * 0.079,
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -178,6 +202,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           ]),
                       child: InkWell(
                         onTap: () {
+                          // if (isIntAdLoaded) {
+                          //   interstitialAd.show();
+                          // }
                           Get.toNamed(Menu[index]['route']);
                         },
                         child: Column(

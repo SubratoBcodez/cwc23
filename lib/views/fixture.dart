@@ -2,7 +2,6 @@ import 'package:cwc23/bcodez/color.dart';
 import 'package:cwc23/bcodez/widget.dart';
 import 'package:cwc23/views/matches.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class FixtureScreen extends StatefulWidget {
   @override
